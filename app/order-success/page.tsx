@@ -1,18 +1,22 @@
 
-"use client";
-
 import Link from "next/link";
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
 
-function OrderSuccessContent() {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
+type OrderSuccessPageProps = {
+  searchParams: Promise<{
+    orderId?: string;
+  }>;
+};
+
+export default async function OrderSuccessPage({
+  searchParams,
+}: OrderSuccessPageProps) {
+  const { orderId } = await searchParams;
 
   return (
     <main className="min-h-screen bg-[#f8f6f2] text-[#24211e]">
       <section className="flex min-h-screen items-center justify-center px-6 py-16">
         <div className="w-full max-w-xl text-center">
+
           <p className="text-[10px] tracking-[0.4em] text-[#8a8178]">
             VELORA
           </p>
@@ -35,6 +39,7 @@ function OrderSuccessContent() {
               <p className="text-[9px] tracking-[0.3em] text-[#8a8178]">
                 ORDER ID
               </p>
+
               <p className="mt-3 font-serif text-xl tracking-[0.08em]">
                 {orderId}
               </p>
@@ -60,16 +65,9 @@ function OrderSuccessContent() {
           <p className="mt-10 text-[9px] leading-5 text-[#8a8178]">
             Payment integration will be added before the store goes live.
           </p>
+
         </div>
       </section>
     </main>
-  );
-}
-
-export default function OrderSuccessPage() {
-  return (
-    <Suspense fallback={<main className="min-h-screen bg-[#f8f6f2]" />}>
-      <OrderSuccessContent />
-    </Suspense>
   );
 }
