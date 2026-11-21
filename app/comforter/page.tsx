@@ -1,13 +1,52 @@
 
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Header from "../Components/Header";
 import ProductCard from "../Components/productcard";
-import { products } from "../data/products";
+import { Product } from "../data/products";
+import { supabase } from "../lib/supabase";
 
 export default function ComforterPage() {
-  const comforters = products.filter(
-    (product) => product.category === "comforter"
-  );
+  const [comforters, setComforters] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchComforters = async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("category", "comforter")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Comforter loading error:", error);
+        setLoading(false);
+        return;
+      }
+
+      const formattedProducts: Product[] = (data || []).map((item) => ({
+        id: Number(item.id),
+        name: item.name || "",
+        category: "comforter",
+        image: item.image || item.images?.[0] || "",
+        images: item.images || [],
+        price: Number(item.price || 0),
+        fabric: item.fabric || "",
+        size: item.size || "",
+        color: item.color || "",
+        description: item.description || "",
+        stock: Number(item.stock || 0),
+      }));
+
+      setComforters(formattedProducts);
+      setLoading(false);
+    };
+
+    fetchComforters();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#f8f6f2] text-[#24211e]">
@@ -51,11 +90,21 @@ export default function ComforterPage() {
             </p>
           </div>
 
-          <div className="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {comforters.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {loading ? (
+            <p className="py-16 text-center text-sm text-[#8a8178]">
+              Loading comforters...
+            </p>
+          ) : comforters.length === 0 ? (
+            <p className="py-16 text-center text-sm text-[#8a8178]">
+              No comforters available at the moment.
+            </p>
+          ) : (
+            <div className="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+              {comforters.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

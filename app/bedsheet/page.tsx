@@ -1,18 +1,54 @@
 
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Header from "../Components/Header";
 import ProductCard from "../Components/productcard";
-import { products } from "../data/products";
+import { Product } from "../data/products";
+import { supabase } from "../lib/supabase";
 
 export default function BedsheetPage() {
-  const bedsheets = products.filter(
-    (product) => product.category === "bedsheet"
-  );
+  const [bedsheets, setBedsheets] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadBedsheets() {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("category", "bedsheet")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Bedsheets loading error:", error.message);
+      } else {
+        const formattedProducts: Product[] = (data || []).map((item) => ({
+          id: Number(item.id),
+          name: item.name,
+          category: item.category,
+          image: item.image || "",
+          images: item.images || [],
+          price: Number(item.price),
+          fabric: item.fabric || "",
+          size: item.size || "",
+          color: item.color || "",
+          description: item.description || "",
+          stock: Number(item.stock),
+        }));
+
+        setBedsheets(formattedProducts);
+      }
+
+      setLoading(false);
+    }
+
+    loadBedsheets();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#f8f6f2] text-[#24211e]">
-      
-
       <Header />
 
       <section className="border-b border-[#dedbd5] bg-[#ebe6df] px-6 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-20">
@@ -52,11 +88,21 @@ export default function BedsheetPage() {
             </p>
           </div>
 
-          <div className="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {bedsheets.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {loading ? (
+            <p className="py-12 text-center text-sm text-[#8a8178]">
+              Loading bedsheets...
+            </p>
+          ) : bedsheets.length === 0 ? (
+            <p className="py-12 text-center text-sm text-[#8a8178]">
+              No bedsheets available right now.
+            </p>
+          ) : (
+            <div className="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+              {bedsheets.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -87,31 +133,19 @@ export default function BedsheetPage() {
               </p>
 
               <div className="mt-5 space-y-3 text-sm text-[#ded9d3]">
-                <Link
-                  href="/"
-                  className="block transition duration-300 hover:translate-x-1 hover:text-white"
-                >
+                <Link href="/" className="block transition duration-300 hover:translate-x-1 hover:text-white">
                   Home
                 </Link>
 
-                <Link
-                  href="/bedsheet"
-                  className="block transition duration-300 hover:translate-x-1 hover:text-white"
-                >
+                <Link href="/bedsheet" className="block transition duration-300 hover:translate-x-1 hover:text-white">
                   Bedsheets
                 </Link>
 
-                <Link
-                  href="/comforter"
-                  className="block transition duration-300 hover:translate-x-1 hover:text-white"
-                >
+                <Link href="/comforter" className="block transition duration-300 hover:translate-x-1 hover:text-white">
                   Comforters
                 </Link>
 
-                <Link
-                  href="/#collections"
-                  className="block transition duration-300 hover:translate-x-1 hover:text-white"
-                >
+                <Link href="/#collections" className="block transition duration-300 hover:translate-x-1 hover:text-white">
                   Collections
                 </Link>
               </div>
@@ -126,15 +160,12 @@ export default function BedsheetPage() {
                 <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
                   Contact Us
                 </p>
-
                 <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
                   Shipping
                 </p>
-
                 <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
                   Returns
                 </p>
-
                 <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
                   Privacy Policy
                 </p>

@@ -1,6 +1,8 @@
+
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Product } from "../data/products";
 
 type ProductCardProps = {
@@ -8,42 +10,78 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const productImage = product.images?.[0] || product.image;
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("velora-wishlist") || "[]");
+    setIsWishlisted(saved.map(Number).includes(product.id));
+  }, [product.id]);
+
+  const toggleWishlist = () => {
+    const saved = JSON.parse(localStorage.getItem("velora-wishlist") || "[]");
+    const ids = saved.map(Number);
+
+    let updated;
+
+    if (ids.includes(product.id)) {
+      updated = ids.filter((id: number) => id !== product.id);
+      setIsWishlisted(false);
+    } else {
+      updated = [...ids, product.id];
+      setIsWishlisted(true);
+    }
+
+    localStorage.setItem("velora-wishlist", JSON.stringify(updated));
+  };
+
   return (
-    <Link
-      href={`/product/${product.id}`}
-      className="group block"
-    >
+    <div className="group block">
       <div className="relative aspect-[4/5] overflow-hidden bg-[#e3ddd4]">
-        <div className="absolute inset-0 flex items-center justify-center transition duration-700 group-hover:scale-105">
-          <div className="text-center">
-            <p className="font-serif text-6xl italic tracking-wide text-[#b8aea2]">
-              VELORA
-            </p>
-
-            <div className="mx-auto mt-4 h-px w-10 bg-[#aaa095]" />
-
-            <p className="mt-4 text-[8px] tracking-[0.35em] text-[#958a7f]">
-              PREMIUM TEXTILES
-            </p>
-          </div>
-        </div>
+        <Link href={`/product/${product.id}`} className="absolute inset-0">
+          {productImage ? (
+            <img
+              src={productImage}
+              alt={product.name}
+              className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <div className="text-center">
+                <p className="font-serif text-5xl italic tracking-wide text-[#b8aea2]">
+                  VELORA
+                </p>
+                <div className="mx-auto mt-4 h-px w-10 bg-[#aaa095]" />
+                <p className="mt-4 text-[8px] tracking-[0.35em] text-[#958a7f]">
+                  PREMIUM TEXTILES
+                </p>
+              </div>
+            </div>
+          )}
+        </Link>
 
         <button
           type="button"
-          onClick={(e) => e.preventDefault()}
-          className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center bg-[#f8f6f2]/90 text-lg transition duration-300 hover:scale-110 hover:bg-white"
+          onClick={toggleWishlist}
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center bg-[#f8f6f2]/90 text-2xl transition duration-300 hover:scale-110 hover:bg-white"
         >
-          ♡
+          <span className={isWishlisted ? "text-[#9b5148]" : "text-[#24211e]"}>
+            {isWishlisted ? "♥" : "♡"}
+          </span>
         </button>
 
-        <div className="absolute inset-x-0 bottom-0 translate-y-full bg-[#24211e]/90 px-6 py-4 text-center text-white transition duration-500 group-hover:translate-y-0">
+        <Link
+          href={`/product/${product.id}`}
+          className="absolute inset-x-0 bottom-0 translate-y-full bg-[#24211e]/90 px-6 py-4 text-center text-white transition duration-500 group-hover:translate-y-0"
+        >
           <span className="text-[9px] tracking-[0.3em]">
             VIEW DETAILS →
           </span>
-        </div>
+        </Link>
       </div>
 
-      <div className="pt-5">
+      <Link href={`/product/${product.id}`} className="block pt-5">
         <p className="text-[9px] tracking-[0.25em] text-[#8a8178]">
           {product.fabric}
         </p>
@@ -55,7 +93,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <p className="mt-2 text-[10px] tracking-[0.18em] text-[#716b64]">
           {product.size} · {product.color}
         </p>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }
