@@ -1,8 +1,52 @@
+
 "use client";
 
+import { useEffect, useState } from "react";
 import Header from "./Components/Header";
+import ProductCard from "./Components/productcard";
+import { Product } from "./data/products";
+import { supabase } from "./lib/supabase";
 
 export default function Home() {
+  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
+  const [arrivalsLoading, setArrivalsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadNewArrivals() {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (error) {
+        console.error("New arrivals load error:", error.message);
+        setArrivalsLoading(false);
+        return;
+      }
+
+      const formattedProducts: Product[] = (data || []).map((item) => ({
+        id: Number(item.id),
+        name: item.name,
+        category: item.category,
+        image: item.image || item.images?.[0] || "",
+        images: item.images || (item.image ? [item.image] : []),
+        price: Number(item.price || 0),
+        fabric: item.fabric || "",
+        size: item.size || "",
+        color: item.color || "",
+        description: item.description || "",
+        stock: Number(item.stock || 0),
+      }));
+
+      setNewArrivals(formattedProducts);
+      setArrivalsLoading(false);
+    }
+
+    loadNewArrivals();
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#f8f6f2] text-[#24211e]">
       <Header />
@@ -47,25 +91,24 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative min-h-[380px] bg-[#d8d0c5] sm:min-h-[430px] md:min-h-0">
-            <div className="absolute inset-6 border border-[#b9afa3] sm:inset-8 md:inset-12" />
+          <div className="relative min-h-[430px] overflow-hidden bg-[#d8d0c5] sm:min-h-[500px] md:min-h-0">
+            <img
+              src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1400"
+              alt="Elegant bedroom interior"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
 
-            <div className="relative flex h-full items-center justify-center">
-              <div className="text-center">
-                <p className="font-serif text-5xl italic tracking-wide text-[#81766b] sm:text-6xl md:text-7xl">
-                  VELORA
-                </p>
+            <div className="absolute inset-0 bg-black/10" />
+            <div className="absolute inset-6 border border-white/60 sm:inset-8 md:inset-12" />
 
-                <div className="mx-auto mt-4 h-px w-10 bg-[#9c9084] sm:mt-5 sm:w-12" />
-
-                <p className="mt-4 text-[7px] tracking-[0.35em] text-[#81766b] sm:mt-5 sm:text-[8px] sm:tracking-[0.45em]">
-                  PREMIUM HOME TEXTILES
-                </p>
-
-                <p className="mt-3 text-[8px] tracking-[0.12em] text-[#91867b] sm:text-[9px] sm:tracking-[0.15em]">
-                  EST. 2026
-                </p>
-              </div>
+            <div className="absolute bottom-14 left-0 right-0 text-center text-white">
+              <p className="font-serif text-5xl italic tracking-widest sm:text-6xl md:text-7xl">
+                VELORA
+              </p>
+              <div className="mx-auto mt-4 h-px w-12 bg-white/80" />
+              <p className="mt-4 text-[8px] tracking-[0.4em] sm:text-[9px]">
+                PREMIUM HOME TEXTILES
+              </p>
             </div>
           </div>
         </div>
@@ -88,14 +131,16 @@ export default function Home() {
               href="/bedsheet"
               className="group relative h-[360px] overflow-hidden bg-[#e3ddd4] transition duration-500 hover:-translate-y-2 hover:shadow-xl sm:h-[420px]"
             >
-              <div className="absolute inset-0 flex items-center justify-center transition duration-700 group-hover:scale-105">
-                <span className="font-serif text-6xl italic text-[#c4bbb0] sm:text-7xl">
-                  01
-                </span>
-              </div>
+              <img
+                src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1000"
+                alt="Premium bedsheet collection"
+                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+              />
 
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#24211e]/80 to-transparent p-6 pt-24 text-white sm:p-7 sm:pt-24">
-                <p className="text-[8px] tracking-[0.25em] text-white/70 sm:text-[9px] sm:tracking-[0.3em]">
+              <div className="absolute inset-0 bg-black/10 transition duration-500 group-hover:bg-black/20" />
+
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#24211e]/85 to-transparent p-6 pt-24 text-white sm:p-7 sm:pt-24">
+                <p className="text-[8px] tracking-[0.25em] text-white/80 sm:text-[9px] sm:tracking-[0.3em]">
                   TIMELESS COMFORT
                 </p>
 
@@ -113,14 +158,16 @@ export default function Home() {
               href="/comforter"
               className="group relative h-[360px] overflow-hidden bg-[#ddd6cc] transition duration-500 hover:-translate-y-2 hover:shadow-xl sm:h-[420px]"
             >
-              <div className="absolute inset-0 flex items-center justify-center transition duration-700 group-hover:scale-105">
-                <span className="font-serif text-6xl italic text-[#bdb3a7] sm:text-7xl">
-                  02
-                </span>
-              </div>
+              <img
+                src="https://images.unsplash.com/photo-1631049035182-249067d7618e?w=1000"
+                alt="Soft luxury comforter collection"
+                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+              />
 
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#24211e]/80 to-transparent p-6 pt-24 text-white sm:p-7 sm:pt-24">
-                <p className="text-[8px] tracking-[0.25em] text-white/70 sm:text-[9px] sm:tracking-[0.3em]">
+              <div className="absolute inset-0 bg-black/10 transition duration-500 group-hover:bg-black/20" />
+
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#24211e]/85 to-transparent p-6 pt-24 text-white sm:p-7 sm:pt-24">
+                <p className="text-[8px] tracking-[0.25em] text-white/80 sm:text-[9px] sm:tracking-[0.3em]">
                   SOFT LUXURY
                 </p>
 
@@ -134,15 +181,20 @@ export default function Home() {
               </div>
             </a>
 
-            <div className="group relative h-[360px] overflow-hidden bg-[#e7e1d8] transition duration-500 hover:-translate-y-2 hover:shadow-xl sm:h-[420px]">
-              <div className="absolute inset-0 flex items-center justify-center transition duration-700 group-hover:scale-105">
-                <span className="font-serif text-6xl italic text-[#c7beb3] sm:text-7xl">
-                  03
-                </span>
-              </div>
+            <a
+              href="#new-arrivals"
+              className="group relative h-[360px] overflow-hidden bg-[#e7e1d8] transition duration-500 hover:-translate-y-2 hover:shadow-xl sm:h-[420px]"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1000"
+                alt="New home textile collection"
+                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+              />
 
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#24211e]/80 to-transparent p-6 pt-24 text-white sm:p-7 sm:pt-24">
-                <p className="text-[8px] tracking-[0.25em] text-white/70 sm:text-[9px] sm:tracking-[0.3em]">
+              <div className="absolute inset-0 bg-black/10 transition duration-500 group-hover:bg-black/20" />
+
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#24211e]/85 to-transparent p-6 pt-24 text-white sm:p-7 sm:pt-24">
+                <p className="text-[8px] tracking-[0.25em] text-white/80 sm:text-[9px] sm:tracking-[0.3em]">
                   JUST ARRIVED
                 </p>
 
@@ -151,11 +203,47 @@ export default function Home() {
                 </h3>
 
                 <p className="mt-4 text-[9px] tracking-[0.2em] sm:text-[10px] sm:tracking-[0.25em]">
-                  COMING SOON →
+                  EXPLORE NEW ARRIVALS →
                 </p>
               </div>
-            </div>
+            </a>
           </div>
+        </div>
+      </section>
+
+      <section
+        id="new-arrivals"
+        className="border-t border-[#dedbd5] px-5 py-16 sm:px-6 sm:py-20 md:px-12"
+      >
+        <div className="mx-auto max-w-7xl">
+          <p className="text-[9px] tracking-[0.35em] text-[#8a8178] sm:text-[10px]">
+            FRESH FROM VELORA
+          </p>
+
+          <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl">
+              New Arrivals
+            </h2>
+            <p className="text-xs tracking-wider text-[#817970]">
+              OUR LATEST COLLECTION
+            </p>
+          </div>
+
+          {arrivalsLoading ? (
+            <p className="py-12 text-center text-sm text-[#817970]">
+              Loading latest products...
+            </p>
+          ) : newArrivals.length === 0 ? (
+            <p className="py-12 text-center text-sm text-[#817970]">
+              New collections coming soon.
+            </p>
+          ) : (
+            <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+              {newArrivals.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -179,11 +267,9 @@ export default function Home() {
           <div className="mt-12 grid border-y border-[#d8d2ca] sm:mt-16 md:grid-cols-3">
             <div className="px-5 py-9 text-center transition duration-300 hover:bg-[#f1ede7] sm:px-6 sm:py-10 md:border-r md:border-[#d8d2ca]">
               <div className="font-serif text-3xl">01</div>
-
               <h3 className="mt-6 text-[10px] tracking-[0.3em]">
                 PREMIUM QUALITY
               </h3>
-
               <p className="mx-auto mt-4 max-w-xs text-sm leading-7 text-[#716b64]">
                 Carefully selected fabrics designed for softness, comfort and
                 everyday living.
@@ -192,11 +278,9 @@ export default function Home() {
 
             <div className="border-t border-[#d8d2ca] px-5 py-9 text-center transition duration-300 hover:bg-[#f1ede7] sm:px-6 sm:py-10 md:border-t-0 md:border-r">
               <div className="font-serif text-3xl">02</div>
-
               <h3 className="mt-6 text-[10px] tracking-[0.3em]">
                 TIMELESS DESIGN
               </h3>
-
               <p className="mx-auto mt-4 max-w-xs text-sm leading-7 text-[#716b64]">
                 Elegant patterns and refined textures created to complement
                 your home beautifully.
@@ -205,11 +289,9 @@ export default function Home() {
 
             <div className="border-t border-[#d8d2ca] px-5 py-9 text-center transition duration-300 hover:bg-[#f1ede7] sm:px-6 sm:py-10 md:border-t-0">
               <div className="font-serif text-3xl">03</div>
-
               <h3 className="mt-6 text-[10px] tracking-[0.3em]">
                 MADE WITH CARE
               </h3>
-
               <p className="mx-auto mt-4 max-w-xs text-sm leading-7 text-[#716b64]">
                 Every textile is thoughtfully chosen with attention to comfort,
                 detail and lasting appeal.
@@ -221,18 +303,22 @@ export default function Home() {
 
       <section className="border-t border-[#dedbd5] bg-[#ebe6df]">
         <div className="grid md:grid-cols-2">
-          <div className="relative min-h-[430px] bg-[#d5cec4] sm:min-h-[500px] md:min-h-[620px]">
-            <div className="absolute inset-6 border border-[#b9afa3] sm:inset-7 md:inset-12" />
+          <div className="relative min-h-[430px] overflow-hidden bg-[#d5cec4] sm:min-h-[500px] md:min-h-[620px]">
+            <img
+              src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200"
+              alt="Beautiful home interior by Velora"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/15" />
+            <div className="absolute inset-6 border border-white/60 sm:inset-7 md:inset-12" />
 
-            <div className="flex h-full items-center justify-center">
-              <div className="text-center">
-                <p className="font-serif text-5xl italic text-[#8b8075] sm:text-6xl md:text-8xl">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center text-white">
+                <p className="font-serif text-5xl italic sm:text-6xl md:text-8xl">
                   VELORA
                 </p>
-
-                <div className="mx-auto mt-5 h-px w-12 bg-[#9b9084]" />
-
-                <p className="mt-5 text-[7px] tracking-[0.35em] text-[#81766b] sm:text-[8px] sm:tracking-[0.4em]">
+                <div className="mx-auto mt-5 h-px w-12 bg-white/80" />
+                <p className="mt-5 text-[7px] tracking-[0.35em] sm:text-[8px] sm:tracking-[0.4em]">
                   THE ART OF TEXTILES
                 </p>
               </div>
@@ -266,9 +352,12 @@ export default function Home() {
                 into your space.
               </p>
 
-              <button className="mt-9 border-b border-[#24211e] pb-2 text-[10px] font-medium tracking-[0.3em] transition duration-300 hover:-translate-y-1 hover:opacity-50">
-                DISCOVER OUR STORY →
-              </button>
+              <a
+                href="#collections"
+                className="mt-9 inline-block border-b border-[#24211e] pb-2 text-[10px] font-medium tracking-[0.3em] transition duration-300 hover:-translate-y-1 hover:opacity-50"
+              >
+                DISCOVER OUR COLLECTION →
+              </a>
             </div>
           </div>
         </div>
@@ -301,31 +390,16 @@ export default function Home() {
               </p>
 
               <div className="mt-5 space-y-3 text-sm text-[#ded9d3]">
-                <a
-                  href="/"
-                  className="block transition duration-300 hover:translate-x-1 hover:text-white"
-                >
+                <a href="/" className="block transition duration-300 hover:translate-x-1 hover:text-white">
                   Home
                 </a>
-
-                <a
-                  href="/bedsheet"
-                  className="block transition duration-300 hover:translate-x-1 hover:text-white"
-                >
+                <a href="/bedsheet" className="block transition duration-300 hover:translate-x-1 hover:text-white">
                   Bedsheets
                 </a>
-
-                <a
-                  href="/comforter"
-                  className="block transition duration-300 hover:translate-x-1 hover:text-white"
-                >
+                <a href="/comforter" className="block transition duration-300 hover:translate-x-1 hover:text-white">
                   Comforters
                 </a>
-
-                <a
-                  href="#collections"
-                  className="block transition duration-300 hover:translate-x-1 hover:text-white"
-                >
+                <a href="#collections" className="block transition duration-300 hover:translate-x-1 hover:text-white">
                   Collections
                 </a>
               </div>
@@ -340,15 +414,12 @@ export default function Home() {
                 <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
                   Contact Us
                 </p>
-
                 <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
                   Shipping
                 </p>
-
                 <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
                   Returns
                 </p>
-
                 <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
                   Privacy Policy
                 </p>
@@ -365,4 +436,4 @@ export default function Home() {
       </footer>
     </main>
   );
-}                
+}
