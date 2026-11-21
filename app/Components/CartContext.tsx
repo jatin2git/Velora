@@ -1,3 +1,4 @@
+
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
@@ -20,23 +21,19 @@ type CartContextType = {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
   useEffect(() => {
-  const savedCart = localStorage.getItem("velora-cart");
+    const savedCart = localStorage.getItem("velora-cart");
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
+  }, []);
 
-  if (savedCart) {
-    setCartItems(JSON.parse(savedCart));
-  }
-}, []);
-
-useEffect(() => {
-  localStorage.setItem("velora-cart", JSON.stringify(cartItems));
-}, [cartItems]);
+  useEffect(() => {
+    localStorage.setItem("velora-cart", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (product: Product) => {
     setCartItems((currentItems) => {
@@ -57,14 +54,14 @@ useEffect(() => {
   };
 
   const removeFromCart = (productId: number) => {
-    setCartItems((currentItems) =>
-      currentItems.filter((item) => item.product.id !== productId)
+    setCartItems((items) =>
+      items.filter((item) => item.product.id !== productId)
     );
   };
 
   const increaseQuantity = (productId: number) => {
-    setCartItems((currentItems) =>
-      currentItems.map((item) =>
+    setCartItems((items) =>
+      items.map((item) =>
         item.product.id === productId
           ? { ...item, quantity: item.quantity + 1 }
           : item
@@ -73,8 +70,8 @@ useEffect(() => {
   };
 
   const decreaseQuantity = (productId: number) => {
-    setCartItems((currentItems) =>
-      currentItems
+    setCartItems((items) =>
+      items
         .map((item) =>
           item.product.id === productId
             ? { ...item, quantity: item.quantity - 1 }
@@ -82,11 +79,11 @@ useEffect(() => {
         )
         .filter((item) => item.quantity > 0)
     );
-    
   };
+
   const clearCart = () => {
-  setCartItems([]);
-};
+    setCartItems([]);
+  };
 
   const cartCount = cartItems.reduce(
     (total, item) => total + item.quantity,

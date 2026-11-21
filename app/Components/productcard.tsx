@@ -3,7 +3,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Product } from "../data/products";
+import { useCart } from "./CartContext";
 
 type ProductCardProps = {
   product: Product;
@@ -12,6 +14,10 @@ type ProductCardProps = {
 export default function ProductCard({ product }: ProductCardProps) {
   const productImage = product.images?.[0] || product.image;
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [added, setAdded] = useState(false);
+
+  const router = useRouter();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("velora-wishlist") || "[]");
@@ -22,17 +28,23 @@ export default function ProductCard({ product }: ProductCardProps) {
     const saved = JSON.parse(localStorage.getItem("velora-wishlist") || "[]");
     const ids = saved.map(Number);
 
-    let updated;
+    const updated = ids.includes(product.id)
+      ? ids.filter((id: number) => id !== product.id)
+      : [...ids, product.id];
 
-    if (ids.includes(product.id)) {
-      updated = ids.filter((id: number) => id !== product.id);
-      setIsWishlisted(false);
-    } else {
-      updated = [...ids, product.id];
-      setIsWishlisted(true);
-    }
-
+    setIsWishlisted(updated.includes(product.id));
     localStorage.setItem("velora-wishlist", JSON.stringify(updated));
+  };
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  };
+
+  const handleBuyNow = () => {
+    addToCart(product);
+    router.push("/checkout");
   };
 
   return (
@@ -64,36 +76,51 @@ export default function ProductCard({ product }: ProductCardProps) {
           type="button"
           onClick={toggleWishlist}
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center bg-[#f8f6f2]/90 text-2xl transition duration-300 hover:scale-110 hover:bg-white"
+          className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center bg-[#f8f6f2]/90 text-2xl transition hover:scale-110 hover:bg-white"
         >
           <span className={isWishlisted ? "text-[#9b5148]" : "text-[#24211e]"}>
             {isWishlisted ? "♥" : "♡"}
           </span>
         </button>
-
-        <Link
-          href={`/product/${product.id}`}
-          className="absolute inset-x-0 bottom-0 translate-y-full bg-[#24211e]/90 px-6 py-4 text-center text-white transition duration-500 group-hover:translate-y-0"
-        >
-          <span className="text-[9px] tracking-[0.3em]">
-            VIEW DETAILS →
-          </span>
-        </Link>
       </div>
 
-      <Link href={`/product/${product.id}`} className="block pt-5">
-        <p className="text-[9px] tracking-[0.25em] text-[#8a8178]">
-          {product.fabric}
+      <div className="pt-4">
+        <Link href={`/product/${product.id}`}>
+          <p className="text-[9px] tracking-[0.25em] text-[#8a8178]">
+            {product.fabric}
+          </p>
+
+          <h3 className="mt-2 font-serif text-xl transition duration-300 group-hover:opacity-60 sm:text-2xl">
+            {product.name}
+          </h3>
+
+          <p className="mt-2 text-[10px] tracking-[0.18em] text-[#716b64]">
+            {product.size} · {product.color}
+          </p>
+        </Link>
+
+        <p className="mt-3 text-base font-medium text-[#24211e]">
+          ₹{Number(product.price).toLocaleString("en-IN")}
         </p>
 
-        <h3 className="mt-2 font-serif text-2xl transition duration-300 group-hover:opacity-60">
-          {product.name}
-        </h3>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={handleBuyNow}
+            className="bg-[#24211e] px-2 py-3 text-[9px] font-medium tracking-wider text-white transition hover:bg-[#75634f] sm:text-[10px]"
+          >
+            BUY NOW
+          </button>
 
-        <p className="mt-2 text-[10px] tracking-[0.18em] text-[#716b64]">
-          {product.size} · {product.color}
-        </p>
-      </Link>
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="border border-[#24211e] bg-transparent px-2 py-3 text-[9px] font-medium tracking-wider text-[#24211e] transition hover:bg-[#24211e] hover:text-white sm:text-[10px]"
+          >
+            {added ? "ADDED ✓" : "ADD TO CART"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
