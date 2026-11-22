@@ -1,10 +1,11 @@
+
 "use client";
 
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "../Components/CartContext";
-import { useOrders } from "../Components/OrdersContext";
+import { useOrders, PaymentMethod } from "../Components/OrdersContext";
 
 export default function CheckoutPage() {
   const { cartItems, clearCart } = useCart();
@@ -22,7 +23,11 @@ export default function CheckoutPage() {
     email: "",
   });
 
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>("Prepaid");
+
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const subtotal = cartItems.reduce(
     (total, item) => total + item.product.price * item.quantity,
@@ -32,16 +37,18 @@ export default function CheckoutPage() {
   const shipping = subtotal >= 999 || subtotal === 0 ? 0 : 99;
   const total = subtotal + shipping;
 
-  const handlePlaceOrder = async() => {
+  const handlePlaceOrder = async () => {
+    if (loading) return;
+
     if (
-      !customer.firstName ||
-      !customer.lastName ||
-      !customer.mobile ||
-      !customer.address ||
-      !customer.city ||
-      !customer.state ||
-      !customer.pin ||
-      !customer.email
+      !customer.firstName.trim() ||
+      !customer.lastName.trim() ||
+      !customer.mobile.trim() ||
+      !customer.address.trim() ||
+      !customer.city.trim() ||
+      !customer.state.trim() ||
+      !customer.pin.trim() ||
+      !customer.email.trim()
     ) {
       setError("Please fill all delivery details.");
       return;
@@ -57,21 +64,40 @@ export default function CheckoutPage() {
       return;
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      setError("Your cart is empty.");
+      return;
+    }
+
     setError("");
+    setLoading(true);
 
-    const orderId = await createOrder(
-      
-      cartItems,
-      customer,
-      subtotal,
-      shipping,
-      total
-    );
+    try {
+      const orderId = await createOrder(
+        cartItems,
+        customer,
+        subtotal,
+        shipping,
+        total,
+        paymentMethod
+      );
 
-    clearCart();
+      clearCart();
+      router.push(`/order-success?orderId=${orderId}`);
+    } catch (err) {
+      console.error("Order placement error:", err);
+      setError("Order could not be placed. Please try again.");
+      setLoading(false);
+    }
+  };
 
-    alert(`Order created successfully.\nOrder ID: ${orderId}`);
-    router.push(`/order-success?orderId=${orderId}`);
+  const updateCustomer = (field: keyof typeof customer, value: string) => {
+    setCustomer((current) => ({ ...current, [field]: value }));
   };
 
   return (
@@ -100,10 +126,7 @@ export default function CheckoutPage() {
             <p className="text-[10px] tracking-[0.4em] text-[#8a8178]">
               VELORA
             </p>
-
-            <h1 className="mt-3 font-serif text-5xl">
-              Checkout
-            </h1>
+            <h1 className="mt-3 font-serif text-5xl">Checkout</h1>
           </div>
 
           {cartItems.length === 0 ? (
@@ -111,7 +134,6 @@ export default function CheckoutPage() {
               <p className="font-serif text-4xl italic text-[#b8aea2]">
                 YOUR CART IS EMPTY
               </p>
-
               <Link
                 href="/bedsheet"
                 className="mt-8 inline-block bg-[#24211e] px-8 py-4 text-[9px] tracking-[0.3em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#3b3631]"
@@ -126,7 +148,6 @@ export default function CheckoutPage() {
                   <p className="text-[10px] tracking-[0.3em] text-[#8a8178]">
                     DELIVERY DETAILS
                   </p>
-
                   <h2 className="mt-3 font-serif text-3xl">
                     Where should we deliver?
                   </h2>
@@ -138,26 +159,16 @@ export default function CheckoutPage() {
                       type="text"
                       placeholder="First Name"
                       value={customer.firstName}
-                      onChange={(e) =>
-                        setCustomer({
-                          ...customer,
-                          firstName: e.target.value,
-                        })
-                      }
-                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition duration-300 focus:border-[#24211e]"
+                      onChange={(e) => updateCustomer("firstName", e.target.value)}
+                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition focus:border-[#24211e]"
                     />
 
                     <input
                       type="text"
                       placeholder="Last Name"
                       value={customer.lastName}
-                      onChange={(e) =>
-                        setCustomer({
-                          ...customer,
-                          lastName: e.target.value,
-                        })
-                      }
-                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition duration-300 focus:border-[#24211e]"
+                      onChange={(e) => updateCustomer("lastName", e.target.value)}
+                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition focus:border-[#24211e]"
                     />
                   </div>
 
@@ -165,26 +176,16 @@ export default function CheckoutPage() {
                     type="tel"
                     placeholder="Mobile Number"
                     value={customer.mobile}
-                    onChange={(e) =>
-                      setCustomer({
-                        ...customer,
-                        mobile: e.target.value,
-                      })
-                    }
-                    className="w-full border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition duration-300 focus:border-[#24211e]"
+                    onChange={(e) => updateCustomer("mobile", e.target.value)}
+                    className="w-full border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition focus:border-[#24211e]"
                   />
 
                   <input
                     type="text"
                     placeholder="Address"
                     value={customer.address}
-                    onChange={(e) =>
-                      setCustomer({
-                        ...customer,
-                        address: e.target.value,
-                      })
-                    }
-                    className="w-full border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition duration-300 focus:border-[#24211e]"
+                    onChange={(e) => updateCustomer("address", e.target.value)}
+                    className="w-full border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition focus:border-[#24211e]"
                   />
 
                   <div className="grid gap-5 sm:grid-cols-3">
@@ -192,39 +193,24 @@ export default function CheckoutPage() {
                       type="text"
                       placeholder="City"
                       value={customer.city}
-                      onChange={(e) =>
-                        setCustomer({
-                          ...customer,
-                          city: e.target.value,
-                        })
-                      }
-                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition duration-300 focus:border-[#24211e]"
+                      onChange={(e) => updateCustomer("city", e.target.value)}
+                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition focus:border-[#24211e]"
                     />
 
                     <input
                       type="text"
                       placeholder="State"
                       value={customer.state}
-                      onChange={(e) =>
-                        setCustomer({
-                          ...customer,
-                          state: e.target.value,
-                        })
-                      }
-                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition duration-300 focus:border-[#24211e]"
+                      onChange={(e) => updateCustomer("state", e.target.value)}
+                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition focus:border-[#24211e]"
                     />
 
                     <input
                       type="text"
                       placeholder="PIN Code"
                       value={customer.pin}
-                      onChange={(e) =>
-                        setCustomer({
-                          ...customer,
-                          pin: e.target.value,
-                        })
-                      }
-                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition duration-300 focus:border-[#24211e]"
+                      onChange={(e) => updateCustomer("pin", e.target.value)}
+                      className="border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition focus:border-[#24211e]"
                     />
                   </div>
 
@@ -232,14 +218,91 @@ export default function CheckoutPage() {
                     type="email"
                     placeholder="Email Address"
                     value={customer.email}
-                    onChange={(e) =>
-                      setCustomer({
-                        ...customer,
-                        email: e.target.value,
-                      })
-                    }
-                    className="w-full border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition duration-300 focus:border-[#24211e]"
+                    onChange={(e) => updateCustomer("email", e.target.value)}
+                    className="w-full border border-[#d8d1c8] bg-transparent px-5 py-4 text-sm outline-none transition focus:border-[#24211e]"
                   />
+                </div>
+
+                <div className="mb-8 mt-14">
+                  <p className="text-[10px] tracking-[0.3em] text-[#8a8178]">
+                    PAYMENT
+                  </p>
+                  <h2 className="mt-3 font-serif text-3xl">
+                    Choose payment method
+                  </h2>
+                  <p className="mt-2 text-xs text-[#8a8178]">
+                    Select your preferred payment option.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPaymentMethod("Prepaid");
+                      setError("");
+                    }}
+                    className={`w-full border p-5 text-left transition duration-300 hover:border-[#24211e] ${
+                      paymentMethod === "Prepaid"
+                        ? "border-[#24211e] bg-[#f0ece5]"
+                        : "border-[#ddd8d0]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-medium">
+                          Online Payment (Prepaid)
+                        </p>
+                        <p className="mt-2 text-xs text-[#716b64]">
+                          UPI · Google Pay · PhonePe · Paytm
+                        </p>
+                        <p className="mt-1 text-xs text-[#716b64]">
+                          Credit / Debit Card · Net Banking
+                        </p>
+                        <p className="mt-3 text-[9px] tracking-[0.15em] text-[#8a8178]">
+                          PAYMENT GATEWAY COMING SOON
+                        </p>
+                      </div>
+                      <span className="text-lg">
+                        {paymentMethod === "Prepaid" ? "◉" : "○"}
+                      </span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPaymentMethod("COD");
+                      setError("");
+                    }}
+                    className={`w-full border p-5 text-left transition duration-300 hover:border-[#24211e] ${
+                      paymentMethod === "COD"
+                        ? "border-[#24211e] bg-[#f0ece5]"
+                        : "border-[#ddd8d0]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-medium">
+                          Cash on Delivery
+                        </p>
+                        <p className="mt-2 text-xs text-[#716b64]">
+                          Pay when your order arrives
+                        </p>
+                      </div>
+                      <span className="text-lg">
+                        {paymentMethod === "COD" ? "◉" : "○"}
+                      </span>
+                    </div>
+                  </button>
+                </div>
+
+                <div className="mt-5 border border-[#ddd8d0] bg-[#f3f0eb] p-4">
+                  <p className="text-xs leading-6 text-[#716b64]">
+                    {paymentMethod === "Prepaid"
+                      ? "Prepaid orders can be placed for testing, but no money will be collected until the payment gateway is activated. Payment will remain pending."
+                      : "Cash on Delivery is selected. Pay for your order when it is delivered."}
+                  </p>
                 </div>
               </div>
 
@@ -258,12 +321,10 @@ export default function CheckoutPage() {
                         <p className="font-serif text-lg">
                           {item.product.name}
                         </p>
-
                         <p className="mt-1 text-[9px] tracking-[0.15em] text-[#8a8178]">
                           QTY: {item.quantity}
                         </p>
                       </div>
-
                       <p className="text-sm">
                         ₹{item.product.price * item.quantity}
                       </p>
@@ -273,36 +334,22 @@ export default function CheckoutPage() {
 
                 <div className="mt-6 space-y-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#716b64]">
-                      Subtotal
-                    </span>
-
+                    <span className="text-[#716b64]">Subtotal</span>
                     <span>₹{subtotal}</span>
                   </div>
-
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#716b64]">
-                      Shipping
-                    </span>
-
-                    <span>
-                      {shipping === 0 ? "FREE" : `₹${shipping}`}
-                    </span>
+                    <span className="text-[#716b64]">Shipping</span>
+                    <span>{shipping === 0 ? "FREE" : `₹${shipping}`}</span>
                   </div>
                 </div>
 
                 <div className="mt-6 flex justify-between border-t border-[#d8d1c8] pt-6">
-                  <span className="text-[10px] tracking-[0.2em]">
-                    TOTAL
-                  </span>
-
-                  <span className="font-serif text-2xl">
-                    ₹{total}
-                  </span>
+                  <span className="text-[10px] tracking-[0.2em]">TOTAL</span>
+                  <span className="font-serif text-2xl">₹{total}</span>
                 </div>
 
                 {error && (
-                  <p className="mt-6 border border-[#c9b8ad] bg-[#eee5df] px-4 py-3 text-center text-[10px] tracking-[0.08em] text-[#6d5145]">
+                  <p className="mt-6 border border-[#c9b8ad] bg-[#eee5df] px-4 py-3 text-center text-[10px] leading-5 text-[#6d5145]">
                     {error}
                   </p>
                 )}
@@ -310,14 +357,14 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={handlePlaceOrder}
-                  className="mt-7 w-full bg-[#24211e] px-6 py-4 text-[9px] tracking-[0.3em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#3b3631]"
+                  disabled={loading}
+                  className="mt-7 w-full bg-[#24211e] px-6 py-4 text-[9px] tracking-[0.3em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#3b3631] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  PLACE ORDER
+                  {loading ? "PLACING ORDER..." : "PLACE ORDER"}
                 </button>
 
                 <p className="mt-4 text-center text-[9px] leading-5 text-[#8a8178]">
-                  Order placement and payment will be enabled after
-                  payment integration is added.
+                  Secure order placement · VELORA
                 </p>
               </aside>
             </div>

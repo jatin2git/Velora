@@ -1,3 +1,4 @@
+
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
@@ -20,6 +21,8 @@ type CustomerDetails = {
   email: string;
 };
 
+export type PaymentMethod = "Prepaid" | "COD";
+
 export type Order = {
   id: string;
   items: OrderItem[];
@@ -28,6 +31,8 @@ export type Order = {
   shipping: number;
   total: number;
   status: string;
+  paymentMethod: PaymentMethod;
+  paymentStatus: string;
   createdAt: string;
 };
 
@@ -38,7 +43,8 @@ type OrdersContextType = {
     customer: CustomerDetails,
     subtotal: number,
     shipping: number,
-    total: number
+    total: number,
+    paymentMethod: PaymentMethod
   ) => Promise<string>;
 };
 
@@ -74,31 +80,34 @@ export function OrdersProvider({
     customer: CustomerDetails,
     subtotal: number,
     shipping: number,
-    total: number
+    total: number,
+    paymentMethod: PaymentMethod
   ): Promise<string> => {
     const orderId = `VELORA-${Date.now()}`;
 
-    const { error } = await supabase
-      .from("orders")
-      .insert({
-        order_reference: orderId,
-        customer_name: `${customer.firstName} ${customer.lastName}`,
-        mobile: customer.mobile,
-        address: customer.address,
-        city: customer.city,
-        state: customer.state,
-        pin: customer.pin,
-        email: customer.email,
-        total,
-        status: "Pending",
-        items,
-      });
+    const paymentStatus =
+      paymentMethod === "COD"
+        ? "Pay on Delivery"
+        : "Pending Payment";
+
+    const { error } = await supabase.from("orders").insert({
+      order_reference: orderId,
+      customer_name: `${customer.firstName} ${customer.lastName}`,
+      mobile: customer.mobile,
+      address: customer.address,
+      city: customer.city,
+      state: customer.state,
+      pin: customer.pin,
+      email: customer.email,
+      total,
+      status: "Pending",
+      payment_method: paymentMethod,
+      payment_status: paymentStatus,
+      items,
+    });
 
     if (error) {
-      console.error(
-        "Order save error:",
-        JSON.stringify(error, null, 2)
-      );
+      console.error("Order save error:", error);
       throw new Error("Order could not be saved.");
     }
 
@@ -110,24 +119,18 @@ export function OrdersProvider({
       shipping,
       total,
       status: "Pending",
+      paymentMethod,
+      paymentStatus,
       createdAt: new Date().toISOString(),
     };
 
-    setOrders((currentOrders) => [
-      newOrder,
-      ...currentOrders,
-    ]);
+    setOrders((currentOrders) => [newOrder, ...currentOrders]);
 
     return orderId;
   };
 
   return (
-    <OrdersContext.Provider
-      value={{
-        orders,
-        createOrder,
-      }}
-    >
+    <OrdersContext.Provider value={{ orders, createOrder }}>
       {children}
     </OrdersContext.Provider>
   );
@@ -137,9 +140,7 @@ export function useOrders() {
   const context = useContext(OrdersContext);
 
   if (!context) {
-    throw new Error(
-      "useOrders must be used inside OrdersProvider"
-    );
+    throw new Error("useOrders must be used inside OrdersProvider");
   }
 
   return context;
