@@ -75,40 +75,31 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#f4f5f0] text-[#303a32]">
-      <div className="bg-[#303a32] px-3 py-2 text-center text-[9px] tracking-[0.22em] text-white sm:text-[10px]">
+      <div className="bg-[#303a32] px-2 py-[7px] text-center text-[9px] tracking-[0.16em] text-white sm:py-2 sm:text-[10px] sm:tracking-[0.22em]">
         FREE SHIPPING ON ORDERS ABOVE ₹999
       </div>
 
       <div className="border-b border-[#d9ddd4]">
-        <div className="relative mx-auto flex h-[76px] max-w-[1500px] items-center justify-center px-4 sm:h-[92px] sm:px-8">
+        <div className="relative mx-auto flex h-[66px] max-w-[1500px] items-center justify-center px-3 sm:h-[88px] sm:px-8">
           <Link
             href="/"
-            className="group absolute left-1/2 -translate-x-1/2 transition duration-300 hover:opacity-75"
+            className="absolute left-1/2 -translate-x-1/2 transition duration-300 hover:opacity-75"
           >
             <img
               src="/velora-logo.png"
               alt="VELORA"
-              className="h-auto w-[125px] brightness-[0.35] contrast-[1.3] sm:w-[155px] md:w-[175px]"
+              className="h-auto w-[92px] brightness-[0.35] contrast-[1.3] sm:w-[145px] md:w-[165px]"
             />
           </Link>
 
-          <div className="absolute right-4 flex items-center gap-4 sm:right-8 sm:gap-6">
+          <div className="absolute right-3 flex items-center gap-[10px] sm:right-8 sm:gap-6">
             <button
               type="button"
               aria-label="Search"
               onClick={() => setSearchOpen(!searchOpen)}
-              className="transition duration-300 hover:-translate-y-0.5 hover:opacity-60"
+              className="flex items-center justify-center transition duration-300 hover:opacity-60"
             >
-              <svg
-                width="21"
-                height="21"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="7" />
                 <path d="m20 20-4-4" />
               </svg>
@@ -117,18 +108,9 @@ export default function Header() {
             <Link
               href="/cart"
               aria-label="Cart"
-              className="relative transition duration-300 hover:-translate-y-0.5 hover:opacity-60"
+              className="relative flex items-center justify-center transition duration-300 hover:opacity-60"
             >
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 8h14l1 13H4L5 8Z" />
                 <path d="M9 8V6a3 3 0 0 1 6 0v2" />
               </svg>
@@ -143,18 +125,9 @@ export default function Header() {
             <Link
               href="/account"
               aria-label="Profile"
-              className="transition duration-300 hover:-translate-y-0.5 hover:opacity-60"
+              className="flex items-center justify-center transition duration-300 hover:opacity-60"
             >
-              <svg
-                width="21"
-                height="21"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4.5 21a7.5 7.5 0 0 1 15 0" />
               </svg>
@@ -163,18 +136,9 @@ export default function Header() {
             <Link
               href="/wishlist"
               aria-label="Wishlist"
-              className="transition duration-300 hover:-translate-y-0.5 hover:opacity-60"
+              className="flex items-center justify-center transition duration-300 hover:opacity-60"
             >
-              <svg
-                width="21"
-                height="21"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
               </svg>
             </Link>
@@ -183,32 +147,29 @@ export default function Header() {
       </div>
 
       <div className="border-b border-[#d9ddd4] bg-[#f4f5f0]">
-        <nav className="mx-auto flex max-w-[1500px] items-center justify-center gap-6 overflow-x-auto px-4 py-[15px] scrollbar-hide sm:gap-8 sm:px-8 md:gap-10">
-          {categories.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="group relative shrink-0 whitespace-nowrap py-1 text-[12px] font-medium tracking-[0.10em] text-[#303a32] transition-colors duration-300 hover:text-[#84917e] sm:text-[13px] sm:tracking-[0.12em] md:text-[14px]"
-            >
-              {item.label}
-              <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[#303a32] transition-all duration-300 group-hover:w-full" />
-            </Link>
-          ))}
-        </nav>
+        
+
+<nav className="mx-auto flex max-w-[1500px] items-center justify-start gap-5 overflow-x-auto px-4 py-3 scrollbar-hide sm:justify-center sm:gap-8 sm:px-8 sm:py-[15px] md:gap-10">
+  {categories.map((item) => (
+    <Link
+      key={item.label}
+      href={item.href}
+      className="group relative shrink-0 whitespace-nowrap py-1 text-[11px] font-medium tracking-[0.08em] text-[#303a32] transition-colors duration-300 hover:text-[#84917e] sm:text-[13px] sm:tracking-[0.12em] md:text-[14px]"
+    >
+      {item.label}
+      <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[#303a32] transition-all duration-300 group-hover:w-full" />
+    </Link>
+  ))}
+</nav>
+
+
       </div>
 
       {searchOpen && (
-        <div className="absolute left-0 right-0 top-full z-[60] border-b border-[#d9ddd4] bg-[#f4f5f0] px-4 py-6 shadow-lg sm:px-8">
+        <div className="absolute left-0 right-0 top-full z-[60] max-h-[75vh] overflow-y-auto border-b border-[#d9ddd4] bg-[#f4f5f0] px-4 py-5 shadow-lg sm:px-8 sm:py-6">
           <div className="mx-auto max-w-3xl">
             <div className="flex items-center gap-3 border-b border-[#b7beb2] pb-3">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <circle cx="11" cy="11" r="7" />
                 <path d="m20 20-4-4" />
               </svg>
