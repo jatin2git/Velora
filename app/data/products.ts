@@ -1,7 +1,7 @@
 export type Product = {
   id: number;
   name: string;
-  category: "bedsheet" | "comforter";
+  category: "bedsheet" | "comforter" | "pillow-covers" | "ac-comforter-set";
   image: string;
   price: number;
   fabric: string;

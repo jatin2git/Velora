@@ -21,7 +21,7 @@ const categories = [
     subtitle: "THE PERFECT FINISH",
     description: "Elegant covers for your pillows.",
     image: "https://images.unsplash.com/photo-1631049035182-249067d7618e?w=1000",
-    href: "/#new-arrivals",
+    href: "/pillow-covers",
   },
   {
     name: "Plain Comforter",
@@ -35,14 +35,7 @@ const categories = [
     subtitle: "COMFORT IN EVERY SEASON",
     description: "Lightweight comfort for peaceful nights.",
     image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1000",
-    href: "/#new-arrivals",
-  },
-  {
-    name: "Duvet Cover",
-    subtitle: "A LAYER OF ELEGANCE",
-    description: "A refined layer for your bedroom.",
-    image: "https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=1000",
-    href: "/#new-arrivals",
+    href: "/ac-comforter-set",
   },
 ];
 
@@ -90,11 +83,11 @@ export default function Home() {
     <main className="min-h-screen bg-[#f5f3ed] text-[#292820]">
       <Header />
 
-      {/* HERO SECTION WITH TEXT OVER IMAGE */}
-      
       {/* HERO SECTION */}
+
       <section className="w-full overflow-hidden bg-[#292820]">
-        {/* MOBILE HERO - FULL IMAGE */}
+        {/* MOBILE HERO */}
+
         <div className="sm:hidden">
           <img
             src="/velora-hero-full.png"
@@ -136,7 +129,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* DESKTOP HERO - EXISTING DESIGN */}
+        {/* DESKTOP HERO */}
+
         <div className="relative hidden h-[580px] sm:block sm:h-[680px] lg:h-[760px]">
           <img
             src="/velora-hero-full.png"
@@ -183,8 +177,8 @@ export default function Home() {
         </div>
       </section>
 
-
       {/* SHOP BY CATEGORY */}
+
       <section
         id="collections"
         className="bg-[#f5f3ed] px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-16"
@@ -250,6 +244,7 @@ export default function Home() {
       </section>
 
       {/* NEW ARRIVALS */}
+
       <section
         id="new-arrivals"
         className="border-t border-[#e5ded1] bg-[#faf8f3] px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-16"
@@ -288,6 +283,7 @@ export default function Home() {
       </section>
 
       {/* VELORA PROMISE */}
+
       <section className="border-t border-[#e5ded1] bg-[#eeece4] px-5 py-20 sm:px-8 sm:py-24 md:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
@@ -350,6 +346,7 @@ export default function Home() {
       </section>
 
       {/* VELORA STORY */}
+
       <section
         id="velora-story"
         className="border-t border-[#e5ded1] bg-[#eae9e1]"
@@ -419,6 +416,7 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
+
       <footer className="border-t border-[#494438] bg-[#292820] text-[#f5f3ed]">
         <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-16 md:px-12">
           <div className="grid gap-10 sm:gap-12 md:grid-cols-4">
@@ -452,8 +450,14 @@ export default function Home() {
                 <Link href="/bedsheet" className="block transition hover:translate-x-1 hover:text-white">
                   Bedsheets
                 </Link>
+                <Link href="/pillow-covers" className="block transition hover:translate-x-1 hover:text-white">
+                  Pillow Covers
+                </Link>
                 <Link href="/comforter" className="block transition hover:translate-x-1 hover:text-white">
-                  Comforters
+                  Plain Comforter
+                </Link>
+                <Link href="/ac-comforter-set" className="block transition hover:translate-x-1 hover:text-white">
+                  AC Comforter Set
                 </Link>
                 <Link href="/#collections" className="block transition hover:translate-x-1 hover:text-white">
                   Collections

@@ -19,7 +19,6 @@ const categories = [
   { label: "PILLOW COVERS", href: "/#collections" },
   { label: "PLAIN COMFORTER", href: "/comforter" },
   { label: "AC COMFORTER SET", href: "/#collections" },
-  { label: "DUVET COVER", href: "/#collections" },
   { label: "COLLECTIONS", href: "/#collections" },
 ];
 
@@ -80,19 +79,19 @@ export default function Header() {
       </div>
 
       <div className="border-b border-[#d9ddd4]">
-        <div className="relative mx-auto flex h-[66px] max-w-[1500px] items-center justify-center px-3 sm:h-[88px] sm:px-8">
+        <div className="mx-auto flex h-[66px] max-w-[1500px] items-center justify-between px-4 sm:h-[88px] sm:px-8">
           <Link
             href="/"
-            className="absolute left-1/2 -translate-x-1/2 transition duration-300 hover:opacity-75"
+            className="shrink-0 transition duration-300 hover:opacity-75"
           >
             <img
               src="/velora-logo.png"
               alt="VELORA"
-              className="h-auto w-[92px] brightness-[0.35] contrast-[1.3] sm:w-[145px] md:w-[165px]"
+              className="h-auto w-[100px] brightness-[0.35] contrast-[1.3] sm:w-[145px] md:w-[165px]"
             />
           </Link>
 
-          <div className="absolute right-3 flex items-center gap-[10px] sm:right-8 sm:gap-6">
+          <div className="flex shrink-0 items-center gap-[12px] sm:gap-6">
             <button
               type="button"
               aria-label="Search"
@@ -147,22 +146,18 @@ export default function Header() {
       </div>
 
       <div className="border-b border-[#d9ddd4] bg-[#f4f5f0]">
-        
-
-<nav className="mx-auto flex max-w-[1500px] items-center justify-start gap-5 overflow-x-auto px-4 py-3 scrollbar-hide sm:justify-center sm:gap-8 sm:px-8 sm:py-[15px] md:gap-10">
-  {categories.map((item) => (
-    <Link
-      key={item.label}
-      href={item.href}
-      className="group relative shrink-0 whitespace-nowrap py-1 text-[11px] font-medium tracking-[0.08em] text-[#303a32] transition-colors duration-300 hover:text-[#84917e] sm:text-[13px] sm:tracking-[0.12em] md:text-[14px]"
-    >
-      {item.label}
-      <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[#303a32] transition-all duration-300 group-hover:w-full" />
-    </Link>
-  ))}
-</nav>
-
-
+        <nav className="mx-auto flex max-w-[1500px] items-center justify-start gap-5 overflow-x-auto px-4 py-3 scrollbar-hide sm:justify-center sm:gap-8 sm:px-8 sm:py-[15px] md:gap-10">
+          {categories.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="group relative shrink-0 whitespace-nowrap py-1 text-[11px] font-medium tracking-[0.08em] text-[#303a32] transition-colors duration-300 hover:text-[#84917e] sm:text-[13px] sm:tracking-[0.12em] md:text-[14px]"
+            >
+              {item.label}
+              <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-[#303a32] transition-all duration-300 group-hover:w-full" />
+            </Link>
+          ))}
+        </nav>
       </div>
 
       {searchOpen && (

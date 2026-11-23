@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,7 +8,7 @@ import { supabase } from "../../lib/supabase";
 type Product = {
   id: number;
   name: string;
-  category: "bedsheet" | "comforter";
+  category: "bedsheet" | "comforter" | "pillow-covers" | "ac-comforter-set";
   image: string | null;
   images: string[] | null;
   price: number;
@@ -22,7 +23,7 @@ type Product = {
 
 type ProductForm = {
   name: string;
-  category: "bedsheet" | "comforter";
+  category: "bedsheet" | "comforter" | "pillow-covers" | "ac-comforter-set";
   price: string;
   fabric: string;
   size: string;
@@ -394,7 +395,9 @@ export default function AdminProductsPage() {
                   className="w-full border border-[#dedbd5] bg-white px-4 py-3 text-sm outline-none"
                 >
                   <option value="bedsheet">Bedsheet</option>
-                  <option value="comforter">Comforter</option>
+                  <option value="pillow-covers">Pillow Covers</option>
+                  <option value="comforter">Plain Comforter</option>
+                  <option value="ac-comforter-set">AC Comforter Set</option>
                 </select>
               </div>
 
@@ -575,7 +578,9 @@ export default function AdminProductsPage() {
             >
               <option value="all">All Categories</option>
               <option value="bedsheet">Bedsheets</option>
-              <option value="comforter">Comforters</option>
+              <option value="pillow-covers">Pillow Covers</option>
+              <option value="comforter">Plain Comforter</option>
+              <option value="ac-comforter-set">AC Comforter Set</option>
             </select>
           </div>
 
