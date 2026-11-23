@@ -2,10 +2,49 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import Header from "./Components/Header";
 import ProductCard from "./Components/productcard";
 import { Product } from "./data/products";
 import { supabase } from "./lib/supabase";
+
+const categories = [
+  {
+    name: "Bedsheets",
+    subtitle: "TIMELESS COMFORT",
+    description: "Beautiful prints for a restful sleep.",
+    image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1000",
+    href: "/bedsheet",
+  },
+  {
+    name: "Pillow Covers",
+    subtitle: "THE PERFECT FINISH",
+    description: "Elegant covers for your pillows.",
+    image: "https://images.unsplash.com/photo-1631049035182-249067d7618e?w=1000",
+    href: "/#new-arrivals",
+  },
+  {
+    name: "Plain Comforter",
+    subtitle: "EVERYDAY SOFTNESS",
+    description: "Soft comfort for everyday living.",
+    image: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1000",
+    href: "/comforter",
+  },
+  {
+    name: "AC Comforter Set",
+    subtitle: "COMFORT IN EVERY SEASON",
+    description: "Lightweight comfort for peaceful nights.",
+    image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1000",
+    href: "/#new-arrivals",
+  },
+  {
+    name: "Duvet Cover",
+    subtitle: "A LAYER OF ELEGANCE",
+    description: "A refined layer for your bedroom.",
+    image: "https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=1000",
+    href: "/#new-arrivals",
+  },
+];
 
 export default function Home() {
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
@@ -48,193 +87,149 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#f8f6f2] text-[#24211e]">
+    <main className="min-h-screen bg-[#f5f3ed] text-[#292820]">
       <Header />
 
-      <section className="relative overflow-hidden border-b border-[#dedbd5] bg-[#e8e2d9]">
-        <div className="grid min-h-[650px] md:grid-cols-2">
-          <div className="flex items-center px-6 py-16 sm:px-8 sm:py-20 md:px-14 lg:px-20">
-            <div className="max-w-xl">
-              <p className="mb-5 text-[9px] tracking-[0.35em] text-[#756b61] sm:mb-6 sm:text-[10px] sm:tracking-[0.45em]">
+      {/* HERO SECTION WITH TEXT OVER IMAGE */}
+      <section className="relative w-full overflow-hidden bg-[#292820]">
+        <div className="relative h-[580px] sm:h-[680px] lg:h-[760px]">
+          <img
+            src="/velora-hero-full.png"
+            alt="Velora luxury bedroom collection"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-r from-[#211e19]/75 via-[#211e19]/35 to-transparent" />
+
+          <div className="relative z-10 flex h-full items-center px-6 sm:px-12 md:px-16 lg:px-24">
+            <div className="max-w-2xl text-white">
+              <p className="text-[9px] font-medium tracking-[0.4em] text-[#e5c99c] sm:text-[11px]">
                 THE ART OF BEAUTIFUL LIVING
               </p>
 
-              <h1 className="font-serif text-4xl leading-[1.08] sm:text-5xl md:text-6xl lg:text-7xl">
-                Comfort,
+              <h1 className="mt-5 font-serif text-4xl leading-tight sm:text-5xl md:text-6xl lg:text-7xl">
+                Comfort Meets
                 <br />
-                Crafted Beautifully.
+                Elegance.
               </h1>
 
-              <div className="mt-6 h-px w-14 bg-[#8d8277] sm:mt-7" />
-
-              <p className="mt-6 max-w-md text-sm leading-7 text-[#655f59] sm:mt-7">
-                Thoughtfully crafted home textiles designed to bring timeless
-                comfort, understated elegance and warmth into your everyday
-                living.
+              <p className="mt-6 max-w-lg text-xs leading-7 text-white/85 sm:text-sm sm:leading-8">
+                Discover beautifully crafted home textiles designed to bring
+                comfort, softness and timeless elegance to your home.
               </p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-5 sm:mt-10 sm:gap-7">
-                <a
-                  href="/bedsheet"
-                  className="inline-block bg-[#24211e] px-6 py-4 text-[9px] font-medium tracking-[0.25em] text-white transition duration-300 hover:-translate-y-1 hover:bg-[#3b3631] hover:shadow-lg sm:px-9 sm:text-[11px] sm:tracking-[0.3em]"
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <Link
+                  href="/#collections"
+                  className="border border-[#b88d50] bg-[#b88d50] px-6 py-3.5 text-[9px] font-semibold tracking-[0.2em] text-white transition duration-300 hover:border-white hover:bg-white hover:text-[#292820] sm:px-8 sm:text-[10px]"
                 >
                   SHOP COLLECTION
-                </a>
+                </Link>
 
-                <a
-                  href="#collections"
-                  className="inline-block border-b border-[#24211e] pb-2 text-[9px] font-medium tracking-[0.25em] transition duration-300 hover:-translate-y-1 hover:opacity-50 sm:text-[11px] sm:tracking-[0.3em]"
+                <Link
+                  href="#velora-story"
+                  className="border border-white/80 bg-transparent px-6 py-3.5 text-[9px] font-semibold tracking-[0.2em] text-white transition duration-300 hover:bg-white hover:text-[#292820] sm:px-8 sm:text-[10px]"
                 >
-                  DISCOVER VELORA →
-                </a>
+                  DISCOVER VELORA
+                </Link>
               </div>
-            </div>
-          </div>
-
-          <div className="relative min-h-[430px] overflow-hidden bg-[#d8d0c5] sm:min-h-[500px] md:min-h-0">
-            <img
-              src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1400"
-              alt="Elegant bedroom interior"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-
-            <div className="absolute inset-0 bg-black/10" />
-            <div className="absolute inset-6 border border-white/60 sm:inset-8 md:inset-12" />
-
-            <div className="absolute bottom-14 left-0 right-0 text-center text-white">
-              <p className="font-serif text-5xl italic tracking-widest sm:text-6xl md:text-7xl">
-                VELORA
-              </p>
-              <div className="mx-auto mt-4 h-px w-12 bg-white/80" />
-              <p className="mt-4 text-[8px] tracking-[0.4em] sm:text-[9px]">
-                PREMIUM HOME TEXTILES
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="collections" className="px-5 py-16 sm:px-6 sm:py-20 md:px-12">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-10 sm:mb-12">
-            <p className="text-[9px] tracking-[0.35em] text-[#8a8178] sm:text-[10px] sm:tracking-[0.4em]">
-              EXPLORE OUR COLLECTION
+      {/* SHOP BY CATEGORY */}
+      <section
+        id="collections"
+        className="bg-[#f5f3ed] px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-16"
+      >
+        <div className="mx-auto max-w-[1500px]">
+          <div className="mb-10 text-center sm:mb-12">
+            <p className="text-[9px] tracking-[0.4em] text-[#a17a43] sm:text-[10px]">
+              EXPLORE VELORA
             </p>
 
-            <h2 className="mt-3 font-serif text-3xl sm:text-4xl md:text-5xl">
+            <h2 className="mt-3 font-serif text-4xl text-[#292820] sm:text-5xl">
               Shop By Category
             </h2>
+
+            <p className="mx-auto mt-4 max-w-md text-xs leading-6 text-[#81786d]">
+              Thoughtfully chosen essentials for a more beautiful and
+              comfortable home.
+            </p>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
-            <a
-              href="/bedsheet"
-              className="group relative h-[360px] overflow-hidden bg-[#e3ddd4] transition duration-500 hover:-translate-y-2 hover:shadow-xl sm:h-[420px]"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1000"
-                alt="Premium bedsheet collection"
-                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-              />
+          <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 xl:grid-cols-5">
+            {categories.map((category, index) => (
+              <Link
+                key={category.name}
+                href={category.href}
+                className="group overflow-hidden rounded-2xl border border-[#e5ded1] bg-[#fffdf9] shadow-[0_3px_14px_rgba(70,55,35,0.06)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(70,55,35,0.12)]"
+              >
+                <div className="relative">
+                  <div className="aspect-[4/5] overflow-hidden bg-[#eee9df]">
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
 
-              <div className="absolute inset-0 bg-black/10 transition duration-500 group-hover:bg-black/20" />
+                  <div className="absolute bottom-0 left-1/2 z-10 flex h-10 w-10 -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-[#b88d50] font-serif text-xs text-white shadow-md">
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+                </div>
 
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#24211e]/85 to-transparent p-6 pt-24 text-white sm:p-7 sm:pt-24">
-                <p className="text-[8px] tracking-[0.25em] text-white/80 sm:text-[9px] sm:tracking-[0.3em]">
-                  TIMELESS COMFORT
-                </p>
+                <div className="px-3 pb-5 pt-8 text-center sm:px-4">
+                  <h3 className="font-serif text-lg text-[#292820] transition-colors duration-300 group-hover:text-[#a17a43] sm:text-xl">
+                    {category.name}
+                  </h3>
 
-                <h3 className="mt-2 font-serif text-2xl sm:text-3xl">
-                  Bedsheets
-                </h3>
+                  <p className="mt-2 text-[8px] font-medium tracking-[0.17em] text-[#a17a43] sm:text-[9px]">
+                    {category.subtitle}
+                  </p>
 
-                <p className="mt-4 text-[9px] tracking-[0.2em] sm:text-[10px] sm:tracking-[0.25em]">
-                  DISCOVER COLLECTION →
-                </p>
-              </div>
-            </a>
+                  <p className="mt-2 text-[10px] leading-5 text-[#81786d] sm:text-xs">
+                    {category.description}
+                  </p>
 
-            <a
-              href="/comforter"
-              className="group relative h-[360px] overflow-hidden bg-[#ddd6cc] transition duration-500 hover:-translate-y-2 hover:shadow-xl sm:h-[420px]"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1631049035182-249067d7618e?w=1000"
-                alt="Soft luxury comforter collection"
-                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-              />
-
-              <div className="absolute inset-0 bg-black/10 transition duration-500 group-hover:bg-black/20" />
-
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#24211e]/85 to-transparent p-6 pt-24 text-white sm:p-7 sm:pt-24">
-                <p className="text-[8px] tracking-[0.25em] text-white/80 sm:text-[9px] sm:tracking-[0.3em]">
-                  SOFT LUXURY
-                </p>
-
-                <h3 className="mt-2 font-serif text-2xl sm:text-3xl">
-                  Comforters
-                </h3>
-
-                <p className="mt-4 text-[9px] tracking-[0.2em] sm:text-[10px] sm:tracking-[0.25em]">
-                  DISCOVER COLLECTION →
-                </p>
-              </div>
-            </a>
-
-            <a
-              href="#new-arrivals"
-              className="group relative h-[360px] overflow-hidden bg-[#e7e1d8] transition duration-500 hover:-translate-y-2 hover:shadow-xl sm:h-[420px]"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1000"
-                alt="New home textile collection"
-                className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-              />
-
-              <div className="absolute inset-0 bg-black/10 transition duration-500 group-hover:bg-black/20" />
-
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#24211e]/85 to-transparent p-6 pt-24 text-white sm:p-7 sm:pt-24">
-                <p className="text-[8px] tracking-[0.25em] text-white/80 sm:text-[9px] sm:tracking-[0.3em]">
-                  JUST ARRIVED
-                </p>
-
-                <h3 className="mt-2 font-serif text-2xl sm:text-3xl">
-                  New Arrivals
-                </h3>
-
-                <p className="mt-4 text-[9px] tracking-[0.2em] sm:text-[10px] sm:tracking-[0.25em]">
-                  EXPLORE NEW ARRIVALS →
-                </p>
-              </div>
-            </a>
+                  <p className="mt-4 text-[9px] font-semibold tracking-[0.15em] text-[#a17a43] transition-all duration-300 group-hover:tracking-[0.22em]">
+                    EXPLORE →
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* NEW ARRIVALS */}
       <section
         id="new-arrivals"
-        className="border-t border-[#dedbd5] px-5 py-16 sm:px-6 sm:py-20 md:px-12"
+        className="border-t border-[#e5ded1] bg-[#faf8f3] px-5 py-16 sm:px-8 sm:py-20 md:px-12 lg:px-16"
       >
-        <div className="mx-auto max-w-7xl">
-          <p className="text-[9px] tracking-[0.35em] text-[#8a8178] sm:text-[10px]">
+        <div className="mx-auto max-w-[1400px]">
+          <p className="text-[9px] tracking-[0.35em] text-[#a17a43] sm:text-[10px]">
             FRESH FROM VELORA
           </p>
 
           <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl">
+            <h2 className="font-serif text-4xl text-[#292820] sm:text-5xl">
               New Arrivals
             </h2>
-            <p className="text-xs tracking-wider text-[#817970]">
+
+            <p className="text-[10px] tracking-[0.15em] text-[#81786d]">
               OUR LATEST COLLECTION
             </p>
           </div>
 
           {arrivalsLoading ? (
-            <p className="py-12 text-center text-sm text-[#817970]">
+            <p className="py-12 text-center text-sm text-[#81786d]">
               Loading latest products...
             </p>
           ) : newArrivals.length === 0 ? (
-            <p className="py-12 text-center text-sm text-[#817970]">
+            <p className="py-12 text-center text-sm text-[#81786d]">
               New collections coming soon.
             </p>
           ) : (
@@ -247,188 +242,196 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-t border-[#dedbd5] bg-[#f8f6f2] px-5 py-20 sm:px-6 sm:py-24 md:px-12 lg:px-20">
+      {/* VELORA PROMISE */}
+      <section className="border-t border-[#e5ded1] bg-[#eeece4] px-5 py-20 sm:px-8 sm:py-24 md:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-[9px] tracking-[0.35em] text-[#8a8178] sm:text-[10px] sm:tracking-[0.4em]">
+            <p className="text-[9px] tracking-[0.4em] text-[#a17a43] sm:text-[10px]">
               THE VELORA PROMISE
             </p>
 
-            <h2 className="mt-4 font-serif text-3xl sm:text-4xl md:text-5xl">
+            <h2 className="mt-4 font-serif text-4xl text-[#292820] sm:text-5xl">
               Made for Everyday Luxury
             </h2>
 
-            <p className="mt-5 text-sm leading-7 text-[#716b64] sm:mt-6">
+            <p className="mt-6 text-sm leading-8 text-[#716b60]">
               Thoughtfully selected textiles that bring softness, comfort and
               timeless elegance to your home.
             </p>
           </div>
 
-          <div className="mt-12 grid border-y border-[#d8d2ca] sm:mt-16 md:grid-cols-3">
-            <div className="px-5 py-9 text-center transition duration-300 hover:bg-[#f1ede7] sm:px-6 sm:py-10 md:border-r md:border-[#d8d2ca]">
-              <div className="font-serif text-3xl">01</div>
-              <h3 className="mt-6 text-[10px] tracking-[0.3em]">
-                PREMIUM QUALITY
-              </h3>
-              <p className="mx-auto mt-4 max-w-xs text-sm leading-7 text-[#716b64]">
-                Carefully selected fabrics designed for softness, comfort and
-                everyday living.
-              </p>
-            </div>
+          <div className="mt-12 grid border-y border-[#d8d1c3] md:mt-16 md:grid-cols-3">
+            {[
+              {
+                number: "01",
+                title: "PREMIUM QUALITY",
+                description:
+                  "Carefully selected fabrics designed for softness, comfort and everyday living.",
+              },
+              {
+                number: "02",
+                title: "TIMELESS DESIGN",
+                description:
+                  "Elegant patterns and refined textures created to complement your home beautifully.",
+              },
+              {
+                number: "03",
+                title: "MADE WITH CARE",
+                description:
+                  "Every textile is thoughtfully chosen with attention to comfort, detail and lasting appeal.",
+              },
+            ].map((item, index) => (
+              <div
+                key={item.number}
+                className={`px-5 py-10 text-center transition duration-300 hover:bg-[#e7e3d9] sm:px-8 ${
+                  index !== 0 ? "border-t border-[#d8d1c3] md:border-t-0" : ""
+                } ${index !== 2 ? "md:border-r md:border-[#d8d1c3]" : ""}`}
+              >
+                <div className="font-serif text-3xl text-[#a17a43]">
+                  {item.number}
+                </div>
 
-            <div className="border-t border-[#d8d2ca] px-5 py-9 text-center transition duration-300 hover:bg-[#f1ede7] sm:px-6 sm:py-10 md:border-t-0 md:border-r">
-              <div className="font-serif text-3xl">02</div>
-              <h3 className="mt-6 text-[10px] tracking-[0.3em]">
-                TIMELESS DESIGN
-              </h3>
-              <p className="mx-auto mt-4 max-w-xs text-sm leading-7 text-[#716b64]">
-                Elegant patterns and refined textures created to complement
-                your home beautifully.
-              </p>
-            </div>
+                <h3 className="mt-6 text-[10px] tracking-[0.3em] text-[#292820]">
+                  {item.title}
+                </h3>
 
-            <div className="border-t border-[#d8d2ca] px-5 py-9 text-center transition duration-300 hover:bg-[#f1ede7] sm:px-6 sm:py-10 md:border-t-0">
-              <div className="font-serif text-3xl">03</div>
-              <h3 className="mt-6 text-[10px] tracking-[0.3em]">
-                MADE WITH CARE
-              </h3>
-              <p className="mx-auto mt-4 max-w-xs text-sm leading-7 text-[#716b64]">
-                Every textile is thoughtfully chosen with attention to comfort,
-                detail and lasting appeal.
-              </p>
-            </div>
+                <p className="mx-auto mt-4 max-w-xs text-sm leading-7 text-[#716b60]">
+                  {item.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-[#dedbd5] bg-[#ebe6df]">
+      {/* VELORA STORY */}
+      <section
+        id="velora-story"
+        className="border-t border-[#e5ded1] bg-[#eae9e1]"
+      >
         <div className="grid md:grid-cols-2">
-          <div className="relative min-h-[430px] overflow-hidden bg-[#d5cec4] sm:min-h-[500px] md:min-h-[620px]">
+          <div className="relative min-h-[400px] overflow-hidden sm:min-h-[500px] md:min-h-[600px]">
             <img
-              src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1200"
-              alt="Beautiful home interior by Velora"
-              className="absolute inset-0 h-full w-full object-cover"
+              src="/velora-luxury-bedroom-hero.png"
+              alt="Beautiful Velora bedroom interior"
+              className="absolute inset-0 h-full w-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-black/15" />
-            <div className="absolute inset-6 border border-white/60 sm:inset-7 md:inset-12" />
+
+            <div className="absolute inset-0 bg-[#292820]/20" />
+            <div className="absolute inset-6 border border-white/60 sm:inset-10" />
 
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-white">
-                <p className="font-serif text-5xl italic sm:text-6xl md:text-8xl">
+                <p className="font-serif text-6xl font-semibold tracking-widest sm:text-7xl md:text-8xl">
                   VELORA
                 </p>
+
                 <div className="mx-auto mt-5 h-px w-12 bg-white/80" />
-                <p className="mt-5 text-[7px] tracking-[0.35em] sm:text-[8px] sm:tracking-[0.4em]">
+
+                <p className="mt-5 text-[8px] tracking-[0.4em]">
                   THE ART OF TEXTILES
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center px-6 py-16 sm:px-8 sm:py-20 md:px-14 lg:px-20">
+          <div className="flex items-center px-6 py-16 sm:px-10 md:px-14 lg:px-20">
             <div className="max-w-xl">
-              <p className="text-[9px] tracking-[0.35em] text-[#82786e] sm:text-[10px] sm:tracking-[0.4em]">
+              <p className="text-[9px] tracking-[0.4em] text-[#a17a43] sm:text-[10px]">
                 THE VELORA STORY
               </p>
 
-              <h2 className="mt-5 font-serif text-4xl leading-tight sm:text-5xl lg:text-6xl">
+              <h2 className="mt-5 font-serif text-5xl leading-tight text-[#292820] sm:text-6xl">
                 Crafted for
                 <br />
                 Beautiful Living.
               </h2>
 
-              <div className="mt-7 h-px w-14 bg-[#8d8277]" />
+              <div className="mt-7 h-px w-14 bg-[#b88d50]" />
 
-              <p className="mt-7 text-sm leading-8 text-[#665f58]">
+              <p className="mt-7 text-sm leading-8 text-[#716b60]">
                 At Velora, we believe that everyday comfort can be beautifully
                 designed. Our collection brings together thoughtfully chosen
                 textiles, refined textures and timeless designs made for modern
                 homes.
               </p>
 
-              <p className="mt-5 text-sm leading-8 text-[#665f58]">
-                From quiet mornings to restful nights, every piece is created
-                to bring warmth, softness and a sense of effortless elegance
-                into your space.
+              <p className="mt-5 text-sm leading-8 text-[#716b60]">
+                From quiet mornings to restful nights, every piece is selected
+                to bring warmth, softness and effortless elegance into your
+                space.
               </p>
 
-              <a
+              <Link
                 href="#collections"
-                className="mt-9 inline-block border-b border-[#24211e] pb-2 text-[10px] font-medium tracking-[0.3em] transition duration-300 hover:-translate-y-1 hover:opacity-50"
+                className="mt-9 inline-block border-b border-[#292820] pb-2 text-[10px] font-medium tracking-[0.3em] transition duration-300 hover:-translate-y-1 hover:opacity-50"
               >
                 DISCOVER OUR COLLECTION →
-              </a>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-[#d9d4cd] bg-[#24211e] text-[#f5f2ed]">
-        <div className="mx-auto max-w-7xl px-5 py-14 sm:px-6 sm:py-16 md:px-12">
+      {/* FOOTER */}
+      <footer className="border-t border-[#494438] bg-[#292820] text-[#f5f3ed]">
+        <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-16 md:px-12">
           <div className="grid gap-10 sm:gap-12 md:grid-cols-4">
             <div className="md:col-span-2">
-              <a
+              <Link
                 href="/"
-                className="inline-block font-serif text-3xl tracking-[0.2em] transition duration-300 hover:opacity-70"
+                className="inline-block font-serif text-3xl font-semibold tracking-[0.2em] transition duration-300 hover:opacity-70"
               >
                 VELORA
-              </a>
+              </Link>
 
-              <p className="mt-2 text-[8px] tracking-[0.4em] text-[#aaa39b]">
+              <p className="mt-2 text-[8px] tracking-[0.4em] text-[#d0c5b2]">
                 THE ART OF TEXTILES
               </p>
 
-              <p className="mt-6 max-w-md text-sm leading-7 text-[#bdb7b0]">
-                Thoughtfully crafted home textiles designed to bring comfort,
+              <p className="mt-6 max-w-md text-sm leading-7 text-[#ded8cc]">
+                Thoughtfully selected home textiles designed to bring comfort,
                 softness and timeless elegance into everyday living.
               </p>
             </div>
 
             <div>
-              <p className="text-[9px] tracking-[0.3em] text-[#aaa39b]">
+              <p className="text-[9px] tracking-[0.3em] text-[#d0c5b2]">
                 EXPLORE
               </p>
 
-              <div className="mt-5 space-y-3 text-sm text-[#ded9d3]">
-                <a href="/" className="block transition duration-300 hover:translate-x-1 hover:text-white">
+              <div className="mt-5 space-y-3 text-sm text-[#e0ddd5]">
+                <Link href="/" className="block transition hover:translate-x-1 hover:text-white">
                   Home
-                </a>
-                <a href="/bedsheet" className="block transition duration-300 hover:translate-x-1 hover:text-white">
+                </Link>
+                <Link href="/bedsheet" className="block transition hover:translate-x-1 hover:text-white">
                   Bedsheets
-                </a>
-                <a href="/comforter" className="block transition duration-300 hover:translate-x-1 hover:text-white">
+                </Link>
+                <Link href="/comforter" className="block transition hover:translate-x-1 hover:text-white">
                   Comforters
-                </a>
-                <a href="#collections" className="block transition duration-300 hover:translate-x-1 hover:text-white">
+                </Link>
+                <Link href="/#collections" className="block transition hover:translate-x-1 hover:text-white">
                   Collections
-                </a>
+                </Link>
               </div>
             </div>
 
             <div>
-              <p className="text-[9px] tracking-[0.3em] text-[#aaa39b]">
+              <p className="text-[9px] tracking-[0.3em] text-[#d0c5b2]">
                 CUSTOMER CARE
               </p>
 
-              <div className="mt-5 space-y-3 text-sm text-[#ded9d3]">
-                <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
-                  Contact Us
-                </p>
-                <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
-                  Shipping
-                </p>
-                <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
-                  Returns
-                </p>
-                <p className="cursor-pointer transition duration-300 hover:translate-x-1 hover:text-white">
-                  Privacy Policy
-                </p>
+              <div className="mt-5 space-y-3 text-sm text-[#e0ddd5]">
+                <p>Contact Us</p>
+                <p>Shipping Information</p>
+                <p>Returns & Refunds</p>
+                <p>Privacy Policy</p>
               </div>
             </div>
           </div>
 
-          <div className="mt-12 border-t border-[#514c47] pt-6 text-center sm:mt-14">
-            <p className="text-[8px] tracking-[0.16em] text-[#918b84] sm:text-[9px] sm:tracking-[0.2em]">
+          <div className="mt-12 border-t border-[#514c40] pt-6 text-center sm:mt-14">
+            <p className="text-[8px] tracking-[0.2em] text-[#d0c5b2] sm:text-[9px]">
               © 2026 VELORA. ALL RIGHTS RESERVED.
             </p>
           </div>
