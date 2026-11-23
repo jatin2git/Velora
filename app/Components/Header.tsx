@@ -13,14 +13,16 @@ type SearchProduct = {
   price: number;
 };
 
+
 const categories = [
   { label: "HOME", href: "/" },
   { label: "BEDSHEET", href: "/bedsheet" },
-  { label: "PILLOW COVERS", href: "/#collections" },
+  { label: "PILLOW COVERS", href: "/pillow-covers" },
   { label: "PLAIN COMFORTER", href: "/comforter" },
-  { label: "AC COMFORTER SET", href: "/#collections" },
+  { label: "AC COMFORTER SET", href: "/ac-comforter-set" },
   { label: "COLLECTIONS", href: "/#collections" },
 ];
+
 
 export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
