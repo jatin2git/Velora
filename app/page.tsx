@@ -91,13 +91,57 @@ export default function Home() {
       <Header />
 
       {/* HERO SECTION WITH TEXT OVER IMAGE */}
-      <section className="relative w-full overflow-hidden bg-[#292820]">
-        <div className="relative h-[580px] sm:h-[680px] lg:h-[760px]">
+      
+      {/* HERO SECTION */}
+      <section className="w-full overflow-hidden bg-[#292820]">
+        {/* MOBILE HERO - FULL IMAGE */}
+        <div className="sm:hidden">
+          <img
+            src="/velora-hero-full.png"
+            alt="Velora luxury bedroom collection"
+            className="block h-auto w-full object-contain"
+          />
+
+          <div className="px-6 py-10 text-white">
+            <p className="text-[9px] font-medium tracking-[0.4em] text-[#e5c99c]">
+              THE ART OF BEAUTIFUL LIVING
+            </p>
+
+            <h1 className="mt-4 font-serif text-4xl leading-tight">
+              Comfort Meets
+              <br />
+              Elegance.
+            </h1>
+
+            <p className="mt-4 max-w-lg text-xs leading-7 text-white/85">
+              Discover beautifully crafted home textiles designed to bring
+              comfort, softness and timeless elegance to your home.
+            </p>
+
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Link
+                href="/#collections"
+                className="border border-[#b88d50] bg-[#b88d50] px-5 py-3.5 text-[9px] font-semibold tracking-[0.15em] text-white transition duration-300 hover:bg-white hover:text-[#292820]"
+              >
+                SHOP COLLECTION
+              </Link>
+
+              <Link
+                href="#velora-story"
+                className="border border-white/80 px-5 py-3.5 text-[9px] font-semibold tracking-[0.15em] text-white transition duration-300 hover:bg-white hover:text-[#292820]"
+              >
+                DISCOVER VELORA
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* DESKTOP HERO - EXISTING DESIGN */}
+        <div className="relative hidden h-[580px] sm:block sm:h-[680px] lg:h-[760px]">
           <img
             src="/velora-hero-full.png"
             alt="Velora luxury bedroom collection"
             className="absolute inset-0 h-full w-full object-cover object-center"
-          
           />
 
           <div className="absolute inset-0 bg-gradient-to-r from-[#211e19]/75 via-[#211e19]/35 to-transparent" />
@@ -138,6 +182,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
 
       {/* SHOP BY CATEGORY */}
       <section
