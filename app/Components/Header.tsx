@@ -13,7 +13,6 @@ type SearchProduct = {
   price: number;
 };
 
-
 const categories = [
   { label: "HOME", href: "/" },
   { label: "BEDSHEET", href: "/bedsheet" },
@@ -23,6 +22,11 @@ const categories = [
   { label: "COLLECTIONS", href: "/#collections" },
 ];
 
+const announcements = [
+  "FREE SHIPPING ON ORDERS ABOVE ₹999",
+  "PREMIUM QUALITY HOME TEXTILES",
+  "CUSTOMER SUPPORT AVAILABLE",
+];
 
 export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -76,8 +80,19 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#f4f5f0] text-[#303a32]">
-      <div className="bg-[#303a32] px-2 py-[7px] text-center text-[9px] tracking-[0.16em] text-white sm:py-2 sm:text-[10px] sm:tracking-[0.22em]">
-        FREE SHIPPING ON ORDERS ABOVE ₹999
+      <div className="announcement-bar overflow-hidden bg-[#303a32] py-[9px] text-white">
+        <div className="announcement-track">
+          {[1, 2].map((group) => (
+            <div className="announcement-group" key={group}>
+              {announcements.map((message, index) => (
+                <span key={`${group}-${message}`}>
+                  {message}
+                  <span className="announcement-star">✦</span>
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="border-b border-[#d9ddd4]">
@@ -89,7 +104,7 @@ export default function Header() {
             <img
               src="/velora-logo.png"
               alt="VELORA"
-              className="h-auto w-[100px] brightness-[0.35] contrast-[1.3] sm:w-[145px] md:w-[165px]"
+              className="h-auto w-[85px] brightness-[0.35] contrast-[1.3] sm:w-[125px] md:w-[145px]"
             />
           </Link>
 
@@ -236,6 +251,63 @@ export default function Header() {
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        .announcement-track {
+          display: flex;
+          width: max-content;
+          animation: announcement-scroll 20s linear infinite;
+        }
+
+        .announcement-group {
+          display: flex;
+          flex-shrink: 0;
+          align-items: center;
+        }
+
+        .announcement-group > span {
+          display: inline-flex;
+          align-items: center;
+          gap: 45px;
+          padding: 0 22px;
+          white-space: nowrap;
+          font-size: 10px;
+          letter-spacing: 0.18em;
+        }
+
+        .announcement-star {
+          color: #c6a36b;
+          font-size: 13px;
+        }
+
+        .announcement-bar:hover .announcement-track {
+          animation-play-state: paused;
+        }
+
+        @keyframes announcement-scroll {
+          from {
+            transform: translateX(-50%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+
+        @media (max-width: 640px) {
+          .announcement-group > span {
+            gap: 25px;
+            padding: 0 12px;
+            font-size: 9px;
+            letter-spacing: 0.12em;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .announcement-track {
+            animation: none;
+          }
+        }
+      `}</style>
     </header>
   );
 }

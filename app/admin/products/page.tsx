@@ -12,6 +12,7 @@ type Product = {
   image: string | null;
   images: string[] | null;
   price: number;
+  mrp: number | null;
   fabric: string | null;
   size: string | null;
   color: string | null;
@@ -24,6 +25,7 @@ type Product = {
 type ProductForm = {
   name: string;
   category: "bedsheet" | "comforter" | "pillow-covers" | "ac-comforter-set";
+  mrp: string;
   price: string;
   fabric: string;
   size: string;
@@ -35,6 +37,7 @@ type ProductForm = {
 const emptyForm: ProductForm = {
   name: "",
   category: "bedsheet",
+  mrp: "",
   price: "0",
   fabric: "",
   size: "",
@@ -122,6 +125,7 @@ export default function AdminProductsPage() {
     setForm({
       name: product.name,
       category: product.category,
+      mrp: product.mrp ? String(product.mrp) : "",
       price: String(product.price ?? 0),
       fabric: product.fabric || "",
       size: product.size || "",
@@ -173,10 +177,24 @@ export default function AdminProductsPage() {
     }
 
     const price = Number(form.price);
+    const mrp = form.mrp.trim() === "" ? null : Number(form.mrp);
     const stock = Number(form.stock);
 
     if (!Number.isFinite(price) || price < 0) {
-      setMessage("Valid price enter karo.");
+      setMessage("Valid selling price enter karo.");
+      return;
+    }
+
+    if (
+      mrp !== null &&
+      (!Number.isFinite(mrp) || mrp <= 0)
+    ) {
+      setMessage("Valid MRP enter karo.");
+      return;
+    }
+
+    if (mrp !== null && mrp < price) {
+      setMessage("MRP selling price se kam nahi ho sakta.");
       return;
     }
 
@@ -203,6 +221,7 @@ export default function AdminProductsPage() {
       const productData = {
         name: form.name.trim(),
         category: form.category,
+        mrp,
         price,
         fabric: form.fabric.trim(),
         size: form.size.trim(),
@@ -403,17 +422,62 @@ export default function AdminProductsPage() {
 
               <div>
                 <label className="mb-2 block text-xs tracking-wider">
-                  PRICE (₹)
+                  MRP / ORIGINAL PRICE (₹)
                 </label>
                 <input
                   type="number"
                   min="0"
                   step="0.01"
-                  value={form.price}
-                  onChange={(e) => updateField("price", e.target.value)}
+                  value={form.mrp}
+                  onChange={(e) => updateField("mrp", e.target.value)}
+                  placeholder="Example: 999"
                   className="w-full border border-[#dedbd5] px-4 py-3 text-sm outline-none"
                 />
+                <p className="mt-1 text-[11px] text-[#8a8178]">
+                  Original price before discount.
+                </p>
               </div>
+
+              <div>
+                <label className="mb-2 block text-xs tracking-wider">
+                  SELLING PRICE (₹) *
+                </label>
+                <input
+                  required
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.price}
+                  onChange={(e) => updateField("price", e.target.value)}
+                  placeholder="Example: 799"
+                  className="w-full border border-[#dedbd5] px-4 py-3 text-sm outline-none"
+                />
+                <p className="mt-1 text-[11px] text-[#8a8178]">
+                  Final price customer will pay.
+                </p>
+              </div>
+
+              {form.mrp.trim() !== "" &&
+                Number(form.mrp) > Number(form.price) &&
+                Number(form.mrp) > 0 && (
+                  <div className="md:col-span-2 border border-[#e7dfd2] bg-[#faf7f0] p-4">
+                    <p className="text-xs tracking-wider text-[#817970]">
+                      AUTOMATIC DISCOUNT PREVIEW
+                    </p>
+                    <p className="mt-2 font-serif text-xl">
+                      {Math.round(
+                        ((Number(form.mrp) - Number(form.price)) /
+                          Number(form.mrp)) *
+                          100
+                      )}
+                      % OFF
+                    </p>
+                    <p className="mt-1 text-xs text-[#817970]">
+                      Customer saves ₹
+                      {(Number(form.mrp) - Number(form.price)).toLocaleString("en-IN")}
+                    </p>
+                  </div>
+                )}
 
               <div>
                 <label className="mb-2 block text-xs tracking-wider">
@@ -594,58 +658,87 @@ export default function AdminProductsPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              {filteredProducts.map((product) => (
-                <div
-                  key={product.id}
-                  className="flex flex-col gap-4 border border-[#e3dfd8] bg-white p-4 sm:flex-row sm:items-center"
-                >
-                  <div className="h-24 w-24 shrink-0 bg-[#eeeae4]">
-                    {product.image && (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="h-full w-full object-cover"
-                      />
-                    )}
+              {filteredProducts.map((product) => {
+                const hasDiscount =
+                  product.mrp !== null &&
+                  Number(product.mrp) > Number(product.price);
+
+                const discount = hasDiscount
+                  ? Math.round(
+                      ((Number(product.mrp) - Number(product.price)) /
+                        Number(product.mrp)) *
+                        100
+                    )
+                  : 0;
+
+                return (
+                  <div
+                    key={product.id}
+                    className="flex flex-col gap-4 border border-[#e3dfd8] bg-white p-4 sm:flex-row sm:items-center"
+                  >
+                    <div className="h-24 w-24 shrink-0 bg-[#eeeae4]">
+                      {product.image && (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="h-full w-full object-cover"
+                        />
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-serif text-lg">{product.name}</h4>
+                      <p className="mt-1 text-xs capitalize text-[#817970]">
+                        {product.category} · {product.fabric || "Fabric not added"}
+                      </p>
+                      <p className="mt-2 text-xs">
+                        {hasDiscount ? (
+                          <>
+                            <span className="text-[#817970] line-through">
+                              ₹{Number(product.mrp).toLocaleString("en-IN")}
+                            </span>{" "}
+                            <strong>
+                              ₹{Number(product.price).toLocaleString("en-IN")}
+                            </strong>{" "}
+                            <span className="text-green-700">
+                              {discount}% OFF
+                            </span>
+                          </>
+                        ) : (
+                          <>₹{Number(product.price).toLocaleString("en-IN")}</>
+                        )}
+                        {" · "}Stock: {product.stock}
+                      </p>
+                      <p className="mt-1 text-[11px] text-[#817970]">
+                        {product.is_active ? "Active on website" : "Hidden from website"}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => editProduct(product)}
+                        className="border border-[#d8d1c8] px-3 py-2 text-xs transition hover:bg-[#f8f6f2]"
+                      >
+                        EDIT
+                      </button>
+
+                      <button
+                        onClick={() => toggleActive(product)}
+                        className="border border-[#d8d1c8] px-3 py-2 text-xs transition hover:bg-[#f8f6f2]"
+                      >
+                        {product.is_active ? "HIDE" : "ACTIVATE"}
+                      </button>
+
+                      <button
+                        onClick={() => deleteProduct(product)}
+                        className="border border-red-200 px-3 py-2 text-xs text-red-700 transition hover:bg-red-50"
+                      >
+                        DELETE
+                      </button>
+                    </div>
                   </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h4 className="font-serif text-lg">{product.name}</h4>
-                    <p className="mt-1 text-xs capitalize text-[#817970]">
-                      {product.category} · {product.fabric || "Fabric not added"}
-                    </p>
-                    <p className="mt-2 text-xs">
-                      ₹{Number(product.price).toLocaleString("en-IN")} · Stock: {product.stock}
-                    </p>
-                    <p className="mt-1 text-[11px] text-[#817970]">
-                      {product.is_active ? "Active on website" : "Hidden from website"}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      onClick={() => editProduct(product)}
-                      className="border border-[#d8d1c8] px-3 py-2 text-xs transition hover:bg-[#f8f6f2]"
-                    >
-                      EDIT
-                    </button>
-
-                    <button
-                      onClick={() => toggleActive(product)}
-                      className="border border-[#d8d1c8] px-3 py-2 text-xs transition hover:bg-[#f8f6f2]"
-                    >
-                      {product.is_active ? "HIDE" : "ACTIVATE"}
-                    </button>
-
-                    <button
-                      onClick={() => deleteProduct(product)}
-                      className="border border-red-200 px-3 py-2 text-xs text-red-700 transition hover:bg-red-50"
-                    >
-                      DELETE
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>

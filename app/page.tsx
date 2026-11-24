@@ -65,6 +65,7 @@ export default function Home() {
         image: item.image || item.images?.[0] || "",
         images: item.images || (item.image ? [item.image] : []),
         price: Number(item.price || 0),
+        mrp: item.mrp ? Number(item.mrp) : null,
         fabric: item.fabric || "",
         size: item.size || "",
         color: item.color || "",
@@ -465,18 +466,50 @@ export default function Home() {
               </div>
             </div>
 
-            <div>
-              <p className="text-[9px] tracking-[0.3em] text-[#d0c5b2]">
-                CUSTOMER CARE
-              </p>
+            
+<div>
+  <p className="text-[9px] tracking-[0.3em] text-[#d0c5b2]">
+    CONTACT US
+  </p>
 
-              <div className="mt-5 space-y-3 text-sm text-[#e0ddd5]">
-                <p>Contact Us</p>
-                <p>Shipping Information</p>
-                <p>Returns & Refunds</p>
-                <p>Privacy Policy</p>
-              </div>
-            </div>
+  <div className="mt-5 space-y-4 text-sm text-[#e0ddd5]">
+    <a
+      href="https://wa.me/919306674303"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-3 transition hover:translate-x-1 hover:text-[#c6a36b]"
+    >
+      <span>✆</span>
+      <span>+91 93066 74303</span>
+    </a>
+
+    <a
+      href="mailto:velora082026@gmail.com"
+      className="flex items-center gap-3 transition hover:translate-x-1 hover:text-[#c6a36b]"
+    >
+      <span>✉</span>
+      <span>velora082026@gmail.com</span>
+    </a>
+
+    <p className="flex items-center gap-3">
+      <span>⌖</span>
+      <span>Panipat, Haryana, India</span>
+    </p>
+  </div>
+
+  <div className="mt-8 border-t border-[#514c40] pt-5">
+    <p className="text-[9px] tracking-[0.3em] text-[#d0c5b2]">
+      CUSTOMER CARE
+    </p>
+
+    <div className="mt-4 space-y-3 text-sm text-[#e0ddd5]">
+      <p>Shipping Information</p>
+      <p>Returns & Refunds</p>
+      <p>Privacy Policy</p>
+    </div>
+  </div>
+</div>
+
           </div>
 
           <div className="mt-12 border-t border-[#514c40] pt-6 text-center sm:mt-14">
